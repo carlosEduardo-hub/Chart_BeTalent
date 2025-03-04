@@ -4,7 +4,7 @@ import { MainSection } from "./components/main_section";
 export default function App() {
   return (
     <>
-      <div className="h-screen min-w-[1024px]">
+      <div className="h-screen w-full">
         <Header />
         <MainSection />
       </div>
