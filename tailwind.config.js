@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        'roboto': ['Roboto', 'sans-serif'],
+        'roboto': ['Roboto'],
       },
       colors: {
         'blue-primary': '#0500FF',
