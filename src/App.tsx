@@ -4,7 +4,7 @@ import { MainSection } from "./components/main_section";
 export default function App() {
   return (
     <>
-      <div className="h-screen w-full">
+      <div className="w-full min-h-screen">
         <Header />
         <MainSection />
       </div>

@@ -3,8 +3,8 @@ import SearchIcon from "../assets/icons/search.svg";
 
 export function SearchSection() {
   return (
-    <div className="ml-40 mt-40 mr-40 h-auto flex justify-between items-center">
-      <h1 className="text-xl font-roboto font-medium text-black-neutral ">
+    <div className="mx-20 sm:mx-32 mt-40 h-auto flex flex-col justify-between gap-2.5 sm:flex-row sm:items-center">
+      <h1 className="text-xl font-roboto font-medium text-black-neutral">
         Funcionários
       </h1>
       <div className="relative">
@@ -15,7 +15,7 @@ export function SearchSection() {
         <input
           type="text"
           placeholder="Pesquisar"
-          className="w-[290px]  py-3 leading-5 pr-10 pl-16 placeholder:text-gray-20 placeholder:text-base placeholder:font-normal border border-gray-10 rounded-lg focus:outline-none"
+          className="w-[335px] py-3 leading-5 pr-10 pl-16 placeholder:text-gray-20 placeholder:text-base placeholder:font-normal border border-gray-10 rounded-lg focus:outline-none"
         />
       </div>
     </div>
