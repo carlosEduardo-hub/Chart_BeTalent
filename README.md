@@ -86,3 +86,7 @@ Este repositório contém a implementação de uma aplicação de teste prática
 *   **Tabela Responsiva:** Utilizei o TailwindCSS para garantir que a tabela se ajuste adequadamente a diferentes tamanhos de tela. Isso garante que a interface seja intuitiva e acessível tanto em dispositivos móveis quanto em desktop.
 *   **Filtro de Pesquisa:** Um campo de input que permite a filtragem dinâmica da tabela com base nos dados digitados. A pesquisa é feita de forma eficiente e em tempo real.
 *   **Consumo da API Simulada:** A aplicação utiliza Axios para fazer as requisições HTTP ao JSON Server, que retorna os dados armazenados no `db.json`. Esses dados são então utilizados para preencher a tabela.
+
+
+## OBSERVAÇÃO
+   O arquivo .env não foi colocado no gitignore propositalmente para a visualição da variável de ambiente,visto que não possui nenhum dado confidencial ou sensível.
