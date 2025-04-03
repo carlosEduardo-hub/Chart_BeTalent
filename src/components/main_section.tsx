@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { SearchSection } from "./search_section";
 import { TableHeader } from "./table_header";
 import { TableRow } from "./table_row";
-import api from "@/http/api";
+import { useEmployeesData } from "@/hooks/useEmployeesData";
+import { Loader } from "lucide-react";
 
 export interface Employee {
   id: number;
@@ -13,39 +14,31 @@ export interface Employee {
   phone: string;
 }
 
+
 export function MainSection() {
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  const { data = [], isLoading } = useEmployeesData(); // Inicializa data com um array vazio caso esteja undefined
   const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
   const [, setSearchTerm] = useState<string>("");
 
-  const getData = async () => {
-    try {
-      const response = await api.get("/employees");
-      setEmployees(response.data);
-      setFilteredEmployees(response.data); 
-    } catch (error) {
-      console.error("Erro ao buscar dados:", error);
-    }
-  };
+  useEffect(() => {
+    setFilteredEmployees(data); // Atualiza os funcionários filtrados quando os dados são carregados
+  }, [data]);
 
   const filterEmployees = (term: string) => {
     const lowerTerm = term.toLowerCase();
-    const filtered = employees.filter((employee) =>
-      employee.name.toLowerCase().includes(lowerTerm) ||
-      employee.job.toLowerCase().includes(lowerTerm) ||
-      employee.phone.includes(lowerTerm)
+    const filtered = data.filter(
+      (employee: Employee) =>
+        employee.name.toLowerCase().includes(lowerTerm) ||
+        employee.job.toLowerCase().includes(lowerTerm) ||
+        employee.phone.includes(lowerTerm)
     );
     setFilteredEmployees(filtered);
   };
 
   const handleSearch = (searchTerm: string) => {
-    setSearchTerm(searchTerm); 
-    filterEmployees(searchTerm); 
+    setSearchTerm(searchTerm);
+    filterEmployees(searchTerm);
   };
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   return (
     <div className="max-w-[335px] sm:max-w-6xl mx-auto flex flex-col justify-center mb-40">
@@ -53,17 +46,29 @@ export function MainSection() {
         <SearchSection onSearch={handleSearch} />
         <TableHeader />
       </div>
+
       
-      {filteredEmployees.map((employee) => (
-        <TableRow
-          key={employee.id} 
-          image={employee.image}
-          name={employee.name}
-          job={employee.job}
-          admission_date={employee.admission_date}
-          phone={employee.phone}
-        />
-      ))}
+
+      {isLoading ? (
+        <Loader className="mx-auto mt-5 text-gray-20 animate-spin"/>
+      ) : (
+        <>
+          {filteredEmployees.length > 0 ? (
+            filteredEmployees.map((employee) => (
+              <TableRow
+                key={employee.id}
+                image={employee.image}
+                name={employee.name}
+                job={employee.job}
+                admission_date={employee.admission_date}
+                phone={employee.phone}
+              />
+            ))
+          ) : (
+            <p className="text-center mt-4">Nenhum funcionário encontrado.</p>
+          )}
+        </>
+      )}
     </div>
   );
 }
