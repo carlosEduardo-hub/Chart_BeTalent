@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { SearchSection } from "./search_section";
 import { TableHeader } from "./table_header";
 import { TableRow } from "./table_row";
 import { useEmployeesData } from "@/hooks/useEmployeesData";
 import { Loader } from "lucide-react";
+import useDebounceValue from "@/hooks/use-debounce-value";
 
 export interface Employee {
   id: number;
@@ -14,30 +15,45 @@ export interface Employee {
   phone: string;
 }
 
+// Função para normalizar strings (remover acentos e tornar minúsculas)
+const normalizeString = (str: string) => 
+  str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+
 
 export function MainSection() {
   const { data = [], isLoading } = useEmployeesData(); // Inicializa data com um array vazio caso esteja undefined
   const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
-  const [, setSearchTerm] = useState<string>("");
+  const [searchTerm, setSearchTerm] = useState<string>(""); // Estado do termo de busca
+  const debouncedSearchTerm = useDebounceValue(searchTerm, 400); // Aplica debounce de 400ms
 
   useEffect(() => {
     setFilteredEmployees(data); // Atualiza os funcionários filtrados quando os dados são carregados
   }, [data]);
 
-  const filterEmployees = (term: string) => {
-    const lowerTerm = term.toLowerCase();
-    const filtered = data.filter(
-      (employee: Employee) =>
-        employee.name.toLowerCase().includes(lowerTerm) ||
-        employee.job.toLowerCase().includes(lowerTerm) ||
-        employee.phone.includes(lowerTerm)
+  const filterEmployees = useCallback((term: string) => {
+    const normalizedTerm = normalizeString(term);
+  
+    const filtered = data.filter((employee: Employee) =>
+      [employee.name, employee.job, employee.phone]
+        .map(normalizeString)
+        .some((field) => field.includes(normalizedTerm))
     );
+  
     setFilteredEmployees(filtered);
-  };
+  }, [data]); // Agora filterEmployees só será recriada se `data` mudar
+
+  useEffect(() => {
+    if (debouncedSearchTerm.trim() !== "") {
+      filterEmployees(debouncedSearchTerm);
+    } else {
+      setFilteredEmployees(data);
+    }
+  }, [debouncedSearchTerm, data, filterEmployees]); // Executa o filtro somente quando o debounce termina
+
+ 
 
   const handleSearch = (searchTerm: string) => {
     setSearchTerm(searchTerm);
-    filterEmployees(searchTerm);
   };
 
   return (
